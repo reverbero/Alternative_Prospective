@@ -63,9 +63,7 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
     </a-entity>
 
     <!-- Video entity posizionato fisso nella scena -->
-    <a-entity id="videoContainer" position="0 0 -3">
-      <a-video id="videoElement" src="#video1" width="4" height="2.25" rotation="0 0 0" autoplay="false" loop="true" sound="volume: 1"></a-video>
-    </a-entity>
+    <a-video id="videoElement" src="#video1" width="4" height="2.25" position="0 1.6 -3" rotation="0 0 0" autoplay="false" loop="true" sound="volume: 1"></a-video>
   </a-scene>
 
   <video id="video1" src="data/video1.mp4" style="display:none;" preload="auto" muted></video>
@@ -81,16 +79,6 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
       if (action === 'found') {
         const targetMap = ['video1', 'video2'];
         videoElement.setAttribute('src', `#${targetMap[index]}`);
-
-        // Imposta le dimensioni specificate per ogni video
-        if (index === 0) {
-          videoElement.setAttribute('width', '4');  // Imposta la larghezza per il video1
-          videoElement.setAttribute('height', '2.25');  // Imposta l'altezza per il video1
-        } else if (index === 1) {
-          videoElement.setAttribute('width', '6');  // Imposta la larghezza per il video2
-          videoElement.setAttribute('height', '3.375');  // Imposta l'altezza per il video2
-        }
-
         videoElement.play();
 
         // Stop the video after 20 seconds
