@@ -36,7 +36,7 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Esempio con più target e partenza video</title>
+  <title>esempio con più target e partenza video</title>
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.3/dist/mindar-image-aframe.prod.js"></script>
   <style>
@@ -63,39 +63,33 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
     </a-entity>
   </a-scene>
 
-  <video id="video1" src="data/video1.mp4" style="display:none;" muted></video>
-  <video id="video2" src="data/video2.mp4" style="display:none;" muted></video>
+  <video id="video1" src="data/video1.mp4" style="display:none;" preload="auto"></video>
+  <video id="video2" src="data/video2.mp4" style="display:none;" preload="auto"></video>
 
   <script>
     let recognizedTarget = null;
-    let timeoutId = null;
+    let videoTimeout = null;
 
     const setRecognizedTarget = (index, action) => {
       const targetMap = ['video1', 'video2'];
       const videoElement = document.getElementById(targetMap[index]);
 
       if (action === 'found') {
-        if (timeoutId) {
-          clearTimeout(timeoutId);
-          timeoutId = null;
-        }
+        recognizedTarget = targetMap[index];
+        videoElement.play();
 
-        if (recognizedTarget !== targetMap[index]) {
-          if (recognizedTarget) {
-            const currentVideoElement = document.getElementById(recognizedTarget);
-            currentVideoElement.pause();
-            currentVideoElement.currentTime = 0; // reset the video
-          }
-          recognizedTarget = targetMap[index];
-          videoElement.play();
-        }
+        // Stop the video after 20 seconds
+        videoTimeout = setTimeout(() => {
+          videoElement.pause();
+          videoElement.currentTime = 0;
+          recognizedTarget = null;
+        }, 20000);
       } else {
         if (recognizedTarget === targetMap[index]) {
-          timeoutId = setTimeout(() => {
-            videoElement.pause();
-            videoElement.currentTime = 0;  // reset the video
-            recognizedTarget = null;
-          }, 20000); // 20 seconds delay
+          clearTimeout(videoTimeout);
+          videoElement.pause();
+          videoElement.currentTime = 0;  // reset the video
+          recognizedTarget = null;
         }
       }
     };
