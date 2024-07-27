@@ -54,13 +54,12 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
   <a-scene mindar-image="imageTargetSrc: data/targets.mind; filterMinCF:0.0005; filterBeta: .1;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    <!-- Video entity posizionato fisso nella scena con dimensioni personalizzabili -->
-    <a-entity id="videoContainer1" position="0 0 -3">
-      <a-video id="video1Element" src="#video1" width="4" height="2.25" rotation="0 0 0" autoplay="false" loop="true" sound="volume: 1"></a-video>
+    <a-entity mindar-image-target="targetIndex: 0">
+      <a-video id="video1Element" src="#video1" width="1" height="1" position="0 0 0" rotation="0 0 0" autoplay="false" loop="true" sound="volume: 1"></a-video>
     </a-entity>
 
-    <a-entity id="videoContainer2" position="0 0 -3">
-      <a-video id="video2Element" src="#video2" width="2" height="1.125" rotation="0 0 0" autoplay="false" loop="true" sound="volume: 1"></a-video>
+    <a-entity mindar-image-target="targetIndex: 1">
+      <a-video id="video2Element" src="#video2" width="1" height="0.5625" position="0 0 0" rotation="0 0 0" autoplay="false" loop="true" sound="volume: 1"></a-video>
     </a-entity>
   </a-scene>
 
@@ -72,7 +71,7 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
     let videoTimeout = null;
 
     const setRecognizedTarget = (index, action) => {
-      const targetMap = ['video1Element', 'video2Element'];
+      const targetMap = ['video1', 'video2'];
       const videoElement = document.getElementById(targetMap[index]);
 
       if (action === 'found') {
