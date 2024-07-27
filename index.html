@@ -55,12 +55,15 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
     <a-entity mindar-image-target="targetIndex: 0">
-      <a-video id="video1Element" src="#video1" width="1" height="1" position="0 0 0" rotation="0 0 0" autoplay="false" loop="true" sound="volume: 1"></a-video>
+      <!-- Target entity, non fa nulla -->
     </a-entity>
 
     <a-entity mindar-image-target="targetIndex: 1">
-      <a-video id="video2Element" src="#video2" width="1" height="0.5625" position="0 0 0" rotation="0 0 0" autoplay="false" loop="true" sound="volume: 1"></a-video>
+      <!-- Target entity, non fa nulla -->
     </a-entity>
+
+    <!-- Video entity posizionato fisso nella scena -->
+    <a-video id="videoElement" src="#video1" width="4" height="2.25" position="0 1.6 -3" rotation="0 0 0" autoplay="false" loop="true" sound="volume: 1"></a-video>
   </a-scene>
 
   <video id="video1" src="data/video1.mp4" style="display:none;" preload="auto" muted></video>
@@ -71,11 +74,11 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
     let videoTimeout = null;
 
     const setRecognizedTarget = (index, action) => {
-      const targetMap = ['video1', 'video2'];
-      const videoElement = document.getElementById(targetMap[index]);
+      const videoElement = document.getElementById('videoElement');
 
       if (action === 'found') {
-        recognizedTarget = targetMap[index];
+        const targetMap = ['video1', 'video2'];
+        videoElement.setAttribute('src', `#${targetMap[index]}`);
         videoElement.play();
 
         // Stop the video after 20 seconds
@@ -85,7 +88,7 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
           recognizedTarget = null;
         }, 20000);
       } else {
-        if (recognizedTarget === targetMap[index]) {
+        if (recognizedTarget !== null) {
           clearTimeout(videoTimeout);
           videoElement.pause();
           videoElement.currentTime = 0;  // reset the video
