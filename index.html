@@ -55,30 +55,27 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
     <a-entity mindar-image-target="targetIndex: 0">
-      <!-- Target entity, non fa nulla -->
+      <a-video id="video1Element" src="#video1" width="2" height="3" position="0 0 0" rotation="0 0 0" autoplay="false" loop="true" sound="volume: 1"></a-video>
     </a-entity>
 
     <a-entity mindar-image-target="targetIndex: 1">
-      <!-- Target entity, non fa nulla -->
+      <a-video id="video2Element" src="#video2" width="1" height="0.5625" position="0 0 0" rotation="0 0 0" autoplay="false" loop="true" sound="volume: 1"></a-video>
     </a-entity>
-
-    <!-- Video entity posizionato fisso nella scena -->
-    <a-video id="videoElement" src="#video1" width="4" height="2.25" position="0 1.6 -3" rotation="0 0 0" autoplay="false" loop="true" sound="volume: 1"></a-video>
   </a-scene>
 
-  <video id="video1" src="data/video1.mp4" style="display:none;" preload="auto" muted></video>
-  <video id="video2" src="data/video2.mp4" style="display:none;" preload="auto" muted></video>
+  <video id="video1" src="data/video1.mp4" style="display:none;" preload="auto"></video>
+  <video id="video2" src="data/video2.mp4" style="display:none;" preload="auto"></video>
 
   <script>
     let recognizedTarget = null;
     let videoTimeout = null;
 
     const setRecognizedTarget = (index, action) => {
-      const videoElement = document.getElementById('videoElement');
+      const targetMap = ['video1', 'video2'];
+      const videoElement = document.getElementById(targetMap[index]);
 
       if (action === 'found') {
-        const targetMap = ['video1', 'video2'];
-        videoElement.setAttribute('src', `#${targetMap[index]}`);
+        recognizedTarget = targetMap[index];
         videoElement.play();
 
         // Stop the video after 20 seconds
@@ -88,7 +85,7 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
           recognizedTarget = null;
         }, 20000);
       } else {
-        if (recognizedTarget !== null) {
+        if (recognizedTarget === targetMap[index]) {
           clearTimeout(videoTimeout);
           videoElement.pause();
           videoElement.currentTime = 0;  // reset the video
@@ -102,13 +99,6 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
       target.addEventListener('targetFound', () => setRecognizedTarget(index, 'found'));
       target.addEventListener('targetLost', () => setRecognizedTarget(index, 'lost'));
     });
-
-    const enableAudio = () => {
-      document.getElementById('video1').muted = false;
-      document.getElementById('video2').muted = false;
-    };
-
-    document.body.addEventListener('click', enableAudio, { once: true });
   </script>
 </body>
 </html>
