@@ -1,0 +1,110 @@
+<!-- Avvio di video al riconoscimento di un target immagine.
+ 
+PASSAGGI DA SEGUIRE
+ 1. IMAGE TARGETS COMPILER: creare il file per il riconoscimento dei target, attraverso questo link(https://hiukim.github.io/mind-ar-js-doc/tools/compile/).
+	Il file dev'essere inserito all'interno della sotto-cartella "data", situata nella cartella di progetto.
+	1.1 Carica una o più immagini, nell'ordine desiderato.
+	1.2 Clicca "Start" e attendi il completamento dell'operazione.
+	1.3 Clicca "Download compiler"; verrà scaricato il file "targets.mind", da sostituire a quello presente nella cartella "data".
+ 2. VIDEO: caricare i video corrispondenti ai diversi target nella sotto-cartella "data". Rinominarli in ordine "video1.mp4", "video2.mp4",... . 
+ 3. MODIFICARE CODICE (qui segnato in ordine di come è scritto il file).
+	3.1 Modificare stile bottone di avvio video
+		<style> #startButton: per modificarne gli aspetti visivi e/o posizione.
+		<body> <button>: per modificare il testo.
+	3.2 Sistemare i TARGET
+		Duplicare le linee di codice corrispondenti a quanti target ci sono. 
+		<a-entity> mindar-image-target="targetIndex": deve corrispondere al numero del target -1. il primo ha targetIndex = 0, il secondo ha targetIndex = 1,... . 
+		<a-video> id="videonElement" //src="#videon" : n corrisponde al numero del target. il terzo target avrà quindi id="video3Element" e src="#video3".
+		width="1" height="0.5625": da regolare in base all'aspect ratio del video da riprodurre. 
+	3.3 Sistemare i VIDEO OUTPUT
+		Duplicare e avere il numero di elementi in base al numero di video necessari.
+		Sistemare corrispettivamente gli id e la src corrispondente.
+	3.4 Modificare lo script in base al numero di elementi corrispondenti.
+		const targetMap: inserire gli id degli elementi video in ordine e separandoli con una virgola.
+		[0, 1]: modifica la lista tra parentesi quadre inserendo i target index dei TARGET. se ci sono 3 TARGET da riconoscere, la lista sarà [0, 1, 2] (inizia da 0).
+
+ANTEPRIMA DA VSCODE A MOBILE
+Cliccando "Go Live", è possibile avere un'anteprima in locale sul brower. Al suo posto, appare il numero di una porta (ad es. Port: 5500).
+Per visualizzarlo su mobile, sono necessari l'indirizzo IP dal tuo pc sul quale si trova il codice che avvii e questo numero di porta.
+Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero porta (ad es. 123.456.7.89:5500).
+
+-->
+
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Esempio con più target e partenza video</title>
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.3/dist/mindar-image-aframe.prod.js"></script>
+  <style>
+    body {
+      background: #000;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <a-scene mindar-image="imageTargetSrc: data/targets.mind; filterMinCF:0.0005; filterBeta: .1;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+    <a-entity mindar-image-target="targetIndex: 0">
+      <a-video id="video1Element" src="#video1" width="1" height="1" position="0 0 0" rotation="0 0 0" autoplay="false" loop="true" sound="volume: 1"></a-video>
+    </a-entity>
+
+    <a-entity mindar-image-target="targetIndex: 1">
+      <a-video id="video2Element" src="#video2" width="1" height="0.5625" position="0 0 0" rotation="0 0 0" autoplay="false" loop="true" sound="volume: 1"></a-video>
+    </a-entity>
+  </a-scene>
+
+  <video id="video1" src="data/video1.mp4" style="display:none;" muted></video>
+  <video id="video2" src="data/video2.mp4" style="display:none;" muted></video>
+
+  <script>
+    let recognizedTarget = null;
+    let timeoutId = null;
+
+    const setRecognizedTarget = (index, action) => {
+      const targetMap = ['video1', 'video2'];
+      const videoElement = document.getElementById(targetMap[index]);
+
+      if (action === 'found') {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+          timeoutId = null;
+        }
+
+        if (recognizedTarget !== targetMap[index]) {
+          if (recognizedTarget) {
+            const currentVideoElement = document.getElementById(recognizedTarget);
+            currentVideoElement.pause();
+            currentVideoElement.currentTime = 0; // reset the video
+          }
+          recognizedTarget = targetMap[index];
+          videoElement.play();
+        }
+      } else {
+        if (recognizedTarget === targetMap[index]) {
+          timeoutId = setTimeout(() => {
+            videoElement.pause();
+            videoElement.currentTime = 0;  // reset the video
+            recognizedTarget = null;
+          }, 20000); // 20 seconds delay
+        }
+      }
+    };
+
+    [0, 1].forEach(index => {
+      const target = document.querySelector(`[mindar-image-target="targetIndex: ${index}"]`);
+      target.addEventListener('targetFound', () => setRecognizedTarget(index, 'found'));
+      target.addEventListener('targetLost', () => setRecognizedTarget(index, 'lost'));
+    });
+  </script>
+</body>
+</html>
