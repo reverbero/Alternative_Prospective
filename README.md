@@ -3,6 +3,5 @@ ReadMe
 Video
 
 
-<video src="video/(0061-1)_bianco_nero.mp4">
+https://github.com/user-attachments/assets/6c86329f-6347-4d62-aa26-6cc32c958ebe
 
-<img src="video/1.png">
