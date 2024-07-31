@@ -72,12 +72,13 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
     </a-scene>
 
     <!-- VIDEO OUTPUT -->
-    <video id="video1" src="data/video1.mp4" style="display:none;" preload="auto"></video>
-    <video id="video2" src="data/video2.mp4" style="display:none;" preload="auto"></video>
-    <video id="video3" src="data/video3.mp4" style="display:none;" preload="auto"></video>
+    <video id="video1" src="data/video1.mp4" style="display:none;" preload="auto" playsinline></video>
+    <video id="video2" src="data/video2.mp4" style="display:none;" preload="auto" playsinline></video>
+    <video id="video3" src="data/video3.mp4" style="display:none;" preload="auto" playsinline></video>
 
     <script>
       let recognizedTarget = null;
+      let userInteracted = false;
 
       const setRecognizedTarget = (index, action) => {
         const targetMap = ['video1', 'video2', 'video3'];
@@ -86,13 +87,15 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
         
         if (action === 'found') {
           recognizedTarget = targetMap[index];
-          videoElement.play().then(() => {
-            console.log(`Video ${targetMap[index]} is playing`);
-          }).catch((error) => {
-            console.error(`Error playing video ${targetMap[index]}:`, error);
-          });
-          aVideoElement.setAttribute('visible', 'true');
-          aVideoElement.components.sound.playSound();
+          if (userInteracted) {
+            videoElement.play().then(() => {
+              console.log(`Video ${targetMap[index]} is playing`);
+            }).catch((error) => {
+              console.error(`Error playing video ${targetMap[index]}:`, error);
+            });
+            aVideoElement.setAttribute('visible', 'true');
+            aVideoElement.components.sound.playSound();
+          }
         } else {
           recognizedTarget = null;
           videoElement.pause();
@@ -115,9 +118,13 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
       });
 
       document.addEventListener('click', () => {
+        userInteracted = true;
         if (recognizedTarget) {
           const videoElement = document.getElementById(recognizedTarget);
           videoElement.muted = !videoElement.muted;
+          videoElement.play().catch((error) => {
+            console.error(`Error playing video ${recognizedTarget} after user interaction:`, error);
+          });
         }
       });
 
