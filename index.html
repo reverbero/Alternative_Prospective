@@ -58,23 +58,25 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
         top: 10px;
         right: 10px;
         z-index: 10;
-        padding: 10px 20px;
-        font-size: 16px;
-        background-color: #fff;
+        padding: 10px;
+        background-color: transparent;
         border: none;
         cursor: pointer;
       }
 
       #infoPanel {
         position: absolute;
-        bottom: -300px;
+        bottom: -100%;
         left: 0;
         width: 100%;
-        background-color: rgba(255, 255, 255, 0.9);
+        height: 100%;
+        background-color: #000;
+        color: #fff;
         padding: 20px;
         box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
         transition: bottom 0.5s ease-in-out;
         z-index: 9;
+        overflow-y: auto;
       }
 
       #infoPanel.open {
@@ -84,7 +86,11 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
   </head>
 
   <body>
-    <button id="infoButton">Info</button>
+    <button id="infoButton">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V11H13V17ZM13 9H11V7H13V9Z" fill="white"/>
+      </svg>
+    </button>
     <div id="infoPanel">
       <h2>Abstract</h2>
       <p>Questo progetto utilizza A-Frame e MindAR per creare un'esperienza di realtà aumentata. Quando una fotografia viene scannerizzata, un video collegato parte automaticamente. Se la fotocamera viene spostata dalla foto, il video si ferma e si resetta. È possibile mettere in muto il video toccandolo. Alla fine del video, questo si resetta e riparte automaticamente.</p>
