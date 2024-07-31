@@ -52,10 +52,45 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
         margin: 0;
         overflow: hidden;
       }
+
+      #infoButton {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 10;
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #fff;
+        border: none;
+        cursor: pointer;
+      }
+
+      #infoPanel {
+        position: absolute;
+        bottom: -300px;
+        left: 0;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+        transition: bottom 0.5s ease-in-out;
+        z-index: 9;
+      }
+
+      #infoPanel.open {
+        bottom: 0;
+      }
     </style>
   </head>
 
   <body>
+    <button id="infoButton">Info</button>
+    <div id="infoPanel">
+      <h2>Abstract</h2>
+      <p>Questo progetto utilizza A-Frame e MindAR per creare un'esperienza di realtà aumentata. Quando una fotografia viene scannerizzata, un video collegato parte automaticamente. Se la fotocamera viene spostata dalla foto, il video si ferma e si resetta. È possibile mettere in muto il video toccandolo. Alla fine del video, questo si resetta e riparte automaticamente.</p>
+      <h2>Funzionamento</h2>
+      <p>Inquadra una delle fotografie target per avviare il video associato. Toccando il video puoi attivare o disattivare l'audio. Se sposti la fotocamera dalla fotografia, il video si ferma e si resetta, pronto per essere riavviato quando la fotografia viene nuovamente inquadrata.</p>
+    </div>
 
     <!-- MindAR + A-Frame tracking -->
     <a-scene mindar-image="imageTargetSrc: data/targets.mind; filterMinCF:0.0005; filterBeta: .1;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
@@ -78,8 +113,17 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
     <video id="video2" src="data/video2.mp4" style="display:none;"></video>
 
     <script>
+      document.getElementById('infoButton').addEventListener('click', () => {
+        const infoPanel = document.getElementById('infoPanel');
+        if (infoPanel.classList.contains('open')) {
+          infoPanel.classList.remove('open');
+        } else {
+          infoPanel.classList.add('open');
+        }
+      });
+
       const targetMap = ['video1', 'video2'];
-      
+
       const setRecognizedTarget = (index, action) => {
         const videoElement = document.getElementById(targetMap[index]);
         if (action === 'found') {
