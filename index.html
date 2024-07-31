@@ -35,14 +35,14 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-	<!-- titolo della pagina web -->
+    <!-- titolo della pagina web -->
     <title>esempio con più target e partenza video</title>
 
     <!-- librerie A-Frame, MindAR -->
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.3/dist/mindar-image-aframe.prod.js"></script>
 
-	<!-- stile della pagina web e del bottone di avvio del video -->
+    <!-- stile della pagina web -->
     <style>
       body {
         background: #000;
@@ -52,22 +52,10 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
         margin: 0;
         overflow: hidden;
       }
-      #startButton {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        z-index: 10;
-        padding: 10px 20px;
-        font-size: 16px;
-        background-color: #fff;
-        border: none;
-        cursor: pointer;
-      }
     </style>
   </head>
 
   <body>
-    <button id="startButton">START</button>
 
     <!-- MindAR + A-Frame tracking -->
     <a-scene mindar-image="imageTargetSrc: data/targets.mind; filterMinCF:0.0005; filterBeta: .1;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
@@ -75,12 +63,12 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
 
       <!--TARGET 1-->
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-video id="video1Element" src="#video1" width="1" height="1" position="0 0 0" rotation="0 0 0" autoplay="true" loop="true" sound="volume: 1"></a-video>
+        <a-video id="video1Element" src="#video1" width="1" height="1" position="0 0 0" rotation="0 0 0" autoplay="true" sound="volume: 1"></a-video>
       </a-entity>
 
       <!--TARGET 2-->
       <a-entity mindar-image-target="targetIndex: 1">
-        <a-video id="video2Element" src="#video2" width="1" height="0.5625" position="0 0 0" rotation="0 0 0" autoplay="true" loop="true" sound="volume: 1"></a-video>
+        <a-video id="video2Element" src="#video2" width="1" height="0.5625" position="0 0 0" rotation="0 0 0" autoplay="true" sound="volume: 1"></a-video>
       </a-entity>
 
     </a-scene>
@@ -89,26 +77,32 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
     <video id="video1" src="data/video1.mp4" style="display:none;"></video>
     <video id="video2" src="data/video2.mp4" style="display:none;"></video>
 
-	<script>
-		let recognizedTarget = null;
-	  
-		const setRecognizedTarget = (index, action) => {
-		// modifica l'array "targetMap" inserendo gli id dei video e separandoli con una virgola
-		  const targetMap = ['video1', 'video2'];
-		  recognizedTarget = action === 'found' ? targetMap[index] : null;
-		};
-	  
-		// modifica la lista tra parentesi quadre inserendo i target index
-		[0, 1].forEach(index => {
-		  document.querySelector(`[mindar-image-target="targetIndex: ${index}"]`).addEventListener('targetFound', () => setRecognizedTarget(index, 'found'));
-		  document.querySelector(`[mindar-image-target="targetIndex: ${index}"]`).addEventListener('targetLost', () => setRecognizedTarget(index, 'lost'));
-		});
-	  
-		document.getElementById('startButton').addEventListener('click', () => {
-		  if (recognizedTarget) {
-			document.getElementById(recognizedTarget).play();
-		  }
-		});
-	  </script>
+    <script>
+      const targetMap = ['video1', 'video2'];
+      
+      const setRecognizedTarget = (index, action) => {
+        const videoElement = document.getElementById(targetMap[index]);
+        if (action === 'found') {
+          videoElement.currentTime = 0;  // Reset the video to start
+          videoElement.play();
+        } else if (action === 'lost') {
+          videoElement.pause();
+          videoElement.currentTime = 0;
+        }
+      };
+
+      [0, 1].forEach(index => {
+        const targetEntity = document.querySelector(`[mindar-image-target="targetIndex: ${index}"]`);
+        targetEntity.addEventListener('targetFound', () => setRecognizedTarget(index, 'found'));
+        targetEntity.addEventListener('targetLost', () => setRecognizedTarget(index, 'lost'));
+      });
+
+      document.querySelectorAll('a-video').forEach(video => {
+        video.addEventListener('click', () => {
+          const videoElement = document.getElementById(video.getAttribute('src').substring(1));
+          videoElement.muted = !videoElement.muted;
+        });
+      });
+    </script>
   </body>
 </html>
