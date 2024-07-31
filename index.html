@@ -64,23 +64,17 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
       <a-entity mindar-image-target="targetIndex: 1">
         <a-video id="video2Element" src="#video2" width="1.1" height="1" position="0 0 0" rotation="0 0 0" autoplay="false" loop="true" sound="volume: 1"></a-video>
       </a-entity>
-
-        <!--TARGET 3-->
-        <a-entity mindar-image-target="targetIndex: 2">
-          <a-video id="video3Element" src="#video3" width="1.1" height="1" position="0 0 0" rotation="0 0 0" autoplay="false" loop="true" sound="volume: 1"></a-video>
-        </a-entity>
     </a-scene>
 
     <!-- VIDEO OUTPUT -->
-    <video id="video1" src="data/video1.mp4" style="display:none;"></video preload="auto"></video>
-    <video id="video2" src="data/video2.mp4" style="display:none;"></video preload="auto"></video>
-    <video id="video3" src="data/video3.mp4" style="display:none;"></video preload="auto"></video>
+    <video id="video1" src="data/video1.mp4" style="display:none;"></video>
+    <video id="video2" src="data/video2.mp4" style="display:none;"></video>
 
     <script>
       let recognizedTarget = null;
 
       const setRecognizedTarget = (index, action) => {
-        const targetMap = ['video1', 'video2', 'video3'];
+        const targetMap = ['video1', 'video2'];
         const videoElement = document.getElementById(targetMap[index]);
         const aVideoElement = document.getElementById(`video${index + 1}Element`);
         
@@ -96,7 +90,7 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
         }
       };
 
-      [0, 1, 2].forEach(index => {
+      [0, 1].forEach(index => {
         document.querySelector(`[mindar-image-target="targetIndex: ${index}"]`).addEventListener('targetFound', () => setRecognizedTarget(index, 'found'));
         document.querySelector(`[mindar-image-target="targetIndex: ${index}"]`).addEventListener('targetLost', () => setRecognizedTarget(index, 'lost'));
       });
@@ -117,12 +111,6 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
       document.getElementById('video2').addEventListener('ended', () => {
         if (recognizedTarget === 'video2') {
           document.getElementById('video2').play();
-        }
-      });
-
-      document.getElementById('video3').addEventListener('ended', () => {
-        if (recognizedTarget === 'video3') {
-          document.getElementById('video3').play();
         }
       });
     </script>
