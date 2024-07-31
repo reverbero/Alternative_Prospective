@@ -80,9 +80,9 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
       let recognizedTarget = null;
 
       const setRecognizedTarget = (index, action) => {
-        const targetMap = ['video1', 'video2', 'video3'];
+        const targetMap = ['video0', 'video1', 'video2'];
         const videoElement = document.getElementById(targetMap[index]);
-        const aVideoElement = document.getElementById(`video${index + 1}Element`);
+        const aVideoElement = document.getElementById(`video${index + 2}Element`);
         
         if (action === 'found') {
           recognizedTarget = targetMap[index];
