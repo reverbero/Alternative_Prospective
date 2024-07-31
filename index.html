@@ -65,25 +65,6 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
         cursor: pointer;
       }
 
-      #infoPanel {
-        position: absolute;
-        bottom: -100%;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: #000;
-        color: #fff;
-        padding: 20px;
-        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
-        transition: bottom 0.5s ease-in-out;
-        z-index: 9;
-        overflow-y: auto;
-      }
-
-      #infoPanel.open {
-        bottom: 0;
-      }
-
       #loadingScreen {
         position: absolute;
         top: 0;
@@ -104,6 +85,25 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
         font-size: 2em;
         margin-top: 20px;
       }
+
+      #infoImage, #endImage {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 100;
+      }
+
+      #infoImage img, #endImage img {
+        max-width: 80%;
+        max-height: 80%;
+      }
     </style>
   </head>
 
@@ -113,17 +113,19 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
       <div id="countdown">10</div>
     </div>
 
+    <div id="infoImage">
+      <img src="path_to_your_image.jpg" alt="Info Image">
+    </div>
+
+    <div id="endImage">
+      <img src="path_to_your_image.jpg" alt="End Image">
+    </div>
+
     <button id="infoButton">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V11H13V17ZM13 9H11V7H13V9Z" fill="white"/>
       </svg>
     </button>
-    <div id="infoPanel">
-      <h2>Abstract</h2>
-      <p>Questo progetto utilizza A-Frame e MindAR per creare un'esperienza di realtà aumentata. Quando una fotografia viene scannerizzata, un video collegato parte automaticamente. Se la fotocamera viene spostata dalla foto, il video si ferma e si resetta. È possibile mettere in muto il video toccandolo. Alla fine del video, questo si resetta e riparte automaticamente.</p>
-      <h2>Funzionamento</h2>
-      <p>Inquadra una delle fotografie target per avviare il video associato. Toccando il video puoi attivare o disattivare l'audio. Se sposti la fotocamera dalla fotografia, il video si ferma e si resetta, pronto per essere riavviato quando la fotografia viene nuovamente inquadrata.</p>
-    </div>
 
     <!-- MindAR + A-Frame tracking -->
     <a-scene mindar-image="imageTargetSrc: data/targets.mind; filterMinCF:0.0005; filterBeta: .1;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
@@ -150,6 +152,7 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
       let countdownValue = 10;
       const countdownElement = document.getElementById('countdown');
       const loadingScreen = document.getElementById('loadingScreen');
+      const endImage = document.getElementById('endImage');
 
       const countdownInterval = setInterval(() => {
         countdownElement.textContent = countdownValue;
@@ -157,15 +160,20 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
         if (countdownValue < 0) {
           clearInterval(countdownInterval);
           loadingScreen.style.display = 'none';
+          endImage.style.display = 'flex';
         }
       }, 1000); // 10 seconds countdown
 
+      endImage.addEventListener('click', () => {
+        endImage.style.display = 'none';
+      });
+
       document.getElementById('infoButton').addEventListener('click', () => {
-        const infoPanel = document.getElementById('infoPanel');
-        if (infoPanel.classList.contains('open')) {
-          infoPanel.classList.remove('open');
+        const infoImage = document.getElementById('infoImage');
+        if (infoImage.style.display === 'flex') {
+          infoImage.style.display = 'none';
         } else {
-          infoPanel.classList.add('open');
+          infoImage.style.display = 'flex';
         }
       });
 
