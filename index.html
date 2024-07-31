@@ -57,7 +57,7 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
 
       <!--TARGET 1-->
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-video id="video1Element" src="#video1" width="1" height="1" position="0 0 0" rotation="0 0 0" autoplay="false" loop="true" sound="volume: 1"></a-video>
+        <a-video id="video1Element" src="#video1" width="1.5" height="1" position="0 0 0" rotation="0 0 0" autoplay="false" loop="true" sound="volume: 1"></a-video>
       </a-entity>
 
       <!--TARGET 2-->
@@ -99,6 +99,18 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
         if (recognizedTarget) {
           const videoElement = document.getElementById(recognizedTarget);
           videoElement.muted = !videoElement.muted;
+        }
+      });
+
+      document.getElementById('video1').addEventListener('ended', () => {
+        if (recognizedTarget === 'video1') {
+          document.getElementById('video1').play();
+        }
+      });
+
+      document.getElementById('video2').addEventListener('ended', () => {
+        if (recognizedTarget === 'video2') {
+          document.getElementById('video2').play();
         }
       });
     </script>
