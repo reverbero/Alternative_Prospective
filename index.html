@@ -86,19 +86,32 @@ Da mobile, entrare in una nuova pagina del browser e digitare indirizzoIP:numero
         
         if (action === 'found') {
           recognizedTarget = targetMap[index];
-          videoElement.play();
+          videoElement.play().then(() => {
+            console.log(`Video ${targetMap[index]} is playing`);
+          }).catch((error) => {
+            console.error(`Error playing video ${targetMap[index]}:`, error);
+          });
+          aVideoElement.setAttribute('visible', 'true');
           aVideoElement.components.sound.playSound();
         } else {
           recognizedTarget = null;
           videoElement.pause();
           videoElement.currentTime = 0;
+          aVideoElement.setAttribute('visible', 'false');
           aVideoElement.components.sound.stopSound();
         }
       };
 
       [0, 1, 2].forEach(index => {
-        document.querySelector(`[mindar-image-target="targetIndex: ${index}"]`).addEventListener('targetFound', () => setRecognizedTarget(index, 'found'));
-        document.querySelector(`[mindar-image-target="targetIndex: ${index}"]`).addEventListener('targetLost', () => setRecognizedTarget(index, 'lost'));
+        const targetElement = document.querySelector(`[mindar-image-target="targetIndex: ${index}"]`);
+        targetElement.addEventListener('targetFound', () => {
+          console.log(`Target ${index} found`);
+          setRecognizedTarget(index, 'found');
+        });
+        targetElement.addEventListener('targetLost', () => {
+          console.log(`Target ${index} lost`);
+          setRecognizedTarget(index, 'lost');
+        });
       });
 
       document.addEventListener('click', () => {
